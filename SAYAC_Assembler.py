@@ -95,7 +95,10 @@ def hexToInt(num: str):
 
 
 def intToBin(num: str, n: int):
-    return bin(int(num)).replace("0b", "")[-n:]
+    binNum = bin(int(num)).replace("0b", "")[-n:]
+    while len(binNum) < n:
+        binNum = "0" + binNum
+    return binNum
 
 
 def parseInstruction(ins, line):
