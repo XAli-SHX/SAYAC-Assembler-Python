@@ -256,6 +256,7 @@ try:
     for lineIndex in range(0, len(insLines)):
         binFile.write(f"{binFileLines[lineIndex]}\n")
     binFile.close()
+    print("Successfully Assembled!")
 except FileNotFoundError:
     print(f"Error: File not found --> ['{insFileName}' does not exists]")
 except KeyError as e:
