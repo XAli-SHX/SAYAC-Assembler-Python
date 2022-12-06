@@ -1,0 +1,29 @@
+LDR r3 r4
+LDRio r2 r6
+STR r3 r4
+STRio r2 r6
+JMR r3 r2
+JMRs r3 r2
+JMI r3 32
+ANR r5 r3 r2
+ANI r5 250
+MSI r5 100
+MHI r5 100
+SLR r5 r2 r3
+SAR r5 r2 r3
+ADR r5 r2 r3
+SUR r5 r2 r3
+ADI r5 150
+SUI r5 150
+MUL r5 r3 r2
+DIV r5 r3 r2
+CMR r3 r2
+CMI 30 r2
+BRC 31 r2
+BRR 31 r2
+SHI 5 r2
+SHIla 5 r2
+NTR r5 r2
+NTR2c r5 r2
+NTD r5
+NTD2c r5
