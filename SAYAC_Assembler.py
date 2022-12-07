@@ -1,4 +1,5 @@
 import sys
+import os
 
 # constants
 VERSION = "v1.0.0-alpha02"
@@ -80,8 +81,22 @@ def main():
 
     # get file name from terminal
     insFileName = sys.argv[1]
-    binFileLines = []
-    assemble(insFileName, binFileLines)
+    if insFileName.startswith("--all"):
+        assembleAll(insFileName.strip())
+    else:
+        assemble(insFileName)
+
+
+def assembleAll(allCmd):
+    typeFilter = None
+    if allCmd.__contains__("="):
+        typeFilter = allCmd.split("=")[1]
+    for insFileName in os.listdir("./"):
+        if typeFilter is not None:
+            if insFileName.endswith(typeFilter):
+                assemble(insFileName)
+        else:
+            assemble(insFileName)
 
 
 # Exceptions
@@ -248,12 +263,13 @@ def parseInstruction(ins, line):
         raise Exception("Uncaught!")
 
 
-def assemble(insFileName, binFileLines):
+def assemble(insFileName):
     try:
         # open the SAYAC Assembly code from the path given
         insFile = open(insFileName, "r")
         insLines = insFile.readlines()
         insFile.close()
+        binFileLines = []
         for lineIndex in range(0, len(insLines)):
             binFileLines.append(parseInstruction(insLines[lineIndex], lineIndex + 1))
         binFileName = insFileName.rsplit(".", maxsplit=1)[0]
