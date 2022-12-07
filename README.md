@@ -5,8 +5,16 @@ same name as the input.
 
 ## How To Use It
 
+- To assemble a single file:
+
 ```
 python SAYAC_Assembler.py "SAYAC instruction file path"
+```
+
+- To assemble all files in the directory with file-type filter:
+
+```
+python SAYAC_Assembler.py --all=txt
 ```
 
 ## Info
