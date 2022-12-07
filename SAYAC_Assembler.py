@@ -12,6 +12,7 @@ INS_JMR = "jmr"  # Jump to address
 INS_JMRs = "jmrs"  # Jump to address & save PC
 INS_JMI = "jmi"  # Jump to immediate address
 INS_ANR = "anr"  # Logical AND operation
+INS_AND = "and"  # Logical AND operation
 INS_ANI = "ani"  # Logical AND operation with immediate value
 INS_MSI = "msi"  # Move low sign extended immediate to register
 INS_MHI = "mhi"  # Move high immediate to register
@@ -45,6 +46,7 @@ INS_REQUIRED_ARGS_COUNT = {
     INS_JMRs: 2,
     INS_JMI: 2,
     INS_ANR: 3,
+    INS_AND: 3,
     INS_ANI: 2,
     INS_MSI: 2,
     INS_MHI: 2,
@@ -157,6 +159,11 @@ def parseInstruction(ins, line):
         imm = insSplitted[2]
         return f"0010_11_{intToBin(imm, 6)}_{intToBin(rd, 4)}"
     elif insType == INS_ANR:
+        rd = insSplitted[1].replace("_", "").replace("r", "")
+        rs1 = insSplitted[2].replace("_", "").replace("r", "")
+        rs2 = insSplitted[3].replace("_", "").replace("r", "")
+        return f"0011_{intToBin(rs1, 4)}_{intToBin(rs2, 4)}_{intToBin(rd, 4)}"
+    elif insType == INS_AND:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
