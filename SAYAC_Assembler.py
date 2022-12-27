@@ -78,6 +78,7 @@ class Sayac:
     def __init__(self):
         self.registers = [i for i in range(0, 16)]
         self.memory = {}
+        self.memoryIO = {}
         # Flags
         self.FLAG_GT = False
         self.FLAG_GT_EQ = False
@@ -91,6 +92,7 @@ class Sayac:
         content = {
             "registers": self.registers,
             "memory": self.memory,
+            "memoryIO": self.memoryIO,
             "flags": {
                 "gt": self.FLAG_GT,
                 "gt_eq": self.FLAG_GT_EQ,
@@ -122,13 +124,15 @@ class Sayac:
         else:
             raise Exception("Invalid FIB")
 
-    def readMemory(self, address: int):
-        if address in self.memory:
-            return self.memory[address]
+    def readMemory(self, address: int, fromIO: bool = False):
+        memory = self.memoryIO if fromIO else self.memory
+        if address in memory:
+            return memory[address]
         return address
 
-    def writeMemory(self, address: str, value: int):
-        self.memory[address] = value
+    def writeMemory(self, address: str, value: int, fromIO: bool = False):
+        memory = self.memoryIO if fromIO else self.memory
+        memory[address] = value
 
 
 def main():
@@ -235,9 +239,11 @@ def parseInstruction(ins, line, sayac: Sayac):
     if INS_REQUIRED_ARGS_COUNT[insType] != (len(insSplitted) - 1):
         raise AssemblySyntaxError(f"Not enough argument for instruction '{insType}'")
     if insType == INS_LdR:
+        # LdR rd rs1
+        # rd <- mem[rs1]
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"0010_00_0_0_{intToBin(rs1, 4)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = sayac.readMemory(sayac.registers[int(rs1)])
     elif insType == INS_LdRio:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
