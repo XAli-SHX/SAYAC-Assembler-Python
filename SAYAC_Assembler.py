@@ -130,7 +130,7 @@ class Sayac:
             return memory[address]
         return address
 
-    def writeMemory(self, address: str, value: int, fromIO: bool = False):
+    def writeMemory(self, address: int, value: int, fromIO: bool = False):
         memory = self.memoryIO if fromIO else self.memory
         memory[address] = value
 
@@ -251,15 +251,17 @@ def parseInstruction(ins, line, sayac: Sayac):
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         sayac.registers[int(rd)] = sayac.readMemory(sayac.registers[int(rs1)], True)
     elif insType == INS_STR:
+        # STR rd rs1
+        # mem[rd] <- rs1
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"0010_01_0_0_{intToBin(rs1, 4)}_{intToBin(rd, 4)}"
-        pass
+        sayac.writeMemory(sayac.registers[int(rd)], sayac.registers[int(rs1)])
     elif insType == INS_STRio:
+        # STRio rd rs1
+        # memio[rd] <- rs1
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"0010_01_1_0_{intToBin(rs1, 4)}_{intToBin(rd, 4)}"
-        pass
+        sayac.writeMemory(sayac.registers[int(rd)], sayac.registers[int(rs1)], True)
     elif insType == INS_JMR:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
