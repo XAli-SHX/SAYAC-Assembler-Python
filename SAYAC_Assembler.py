@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 
 # constants
 VERSION = "v1.0.0-alpha01"
@@ -72,52 +73,62 @@ INS_REQUIRED_ARGS_COUNT = {
     INS_NTD2c: 1,
 }
 
-registers = [i for i in range(0, 16)]
-memory = {}
 
-# Flags
-FLAG_GT = False
-FLAG_GT_EQ = False
-FLAG_EQ = False
-FLAG_NEQ = False
-FLAG_LT = False
-FLAG_LT_EQ = False
+class Sayac:
+    def __init__(self):
+        self.registers = [i for i in range(0, 16)]
+        self.memory = {}
+        # Flags
+        self.FLAG_GT = False
+        self.FLAG_GT_EQ = False
+        self.FLAG_EQ = False
+        self.FLAG_NEQ = False
+        self.FLAG_LT = False
+        self.FLAG_LT_EQ = False
 
+    def createAssemblerOutJsonFile(self, name: str):
+        f = open(f"{name}.sayac.json", "w")
+        content = {
+            "registers": self.registers,
+            "memory": self.memory,
+            "flags": {
+                "gt": self.FLAG_GT,
+                "gt_eq": self.FLAG_GT_EQ,
+                "eq": self.FLAG_EQ,
+                "neq": self.FLAG_NEQ,
+                "lt": self.FLAG_LT,
+                "lt_eq": self.FLAG_LT_EQ,
+            }
+        }
+        f.write(json.dumps(content))
+        f.close()
 
-def FIBtoFlag(fib5bit: str):
-    if len(fib5bit) != 5:
-        raise Exception("FIB must be 5 bit")
-    global FLAG_GT
-    global FLAG_GT_EQ
-    global FLAG_EQ
-    global FLAG_NEQ
-    global FLAG_LT
-    global FLAG_LT_EQ
-    fib = fib5bit[2:]
-    if fib == "000":
-        return FLAG_EQ
-    elif fib == "001":
-        return FLAG_LT
-    elif fib == "010":
-        return FLAG_GT
-    elif fib == "011":
-        return FLAG_GT_EQ
-    elif fib == "100":
-        return FLAG_LT_EQ
-    elif fib == "101":
-        return FLAG_NEQ
-    else:
-        raise Exception("Invalid FIB")
+    def FIBtoFlag(self, fib5bit: str):
+        if len(fib5bit) != 5:
+            raise Exception("FIB must be 5 bit")
+        fib = fib5bit[2:]
+        if fib == "000":
+            return self.FLAG_EQ
+        elif fib == "001":
+            return self.FLAG_LT
+        elif fib == "010":
+            return self.FLAG_GT
+        elif fib == "011":
+            return self.FLAG_GT_EQ
+        elif fib == "100":
+            return self.FLAG_LT_EQ
+        elif fib == "101":
+            return self.FLAG_NEQ
+        else:
+            raise Exception("Invalid FIB")
 
+    def readMemory(self, address: int):
+        if address in self.memory:
+            return self.memory[address]
+        return address
 
-def readMemory(address: int):
-    if address in memory:
-        return memory[address]
-    return address
-
-
-def writeMemory(address: str, value: int):
-    memory[address] = value
+    def writeMemory(self, address: str, value: int):
+        self.memory[address] = value
 
 
 def main():
@@ -142,58 +153,59 @@ def extractNumber(cmd: str, excludeLetter: str):
     return int(cmd)
 
 
-def exeRegisterCommand(cmd: str):
+def exeRegisterCommand(sayac: Sayac, cmd: str):
     try:
         if cmd == "r":
-            print(registers)
+            print(sayac.registers)
         else:
-            print(f"{cmd} = {registers[extractNumber(cmd, 'r')]}")
+            print(f"{cmd} = {sayac.registers[extractNumber(cmd, 'r')]}")
     except ValueError:
         print(f"Error: {extractNumber(cmd, 'r')} is an invalid number")
 
 
-def exeMemoryCommand(cmd: str):
+def exeMemoryCommand(sayac: Sayac, cmd: str):
     try:
         if cmd == "m":
-            print(memory)
+            print(sayac.memory)
         else:
             if cmd.replace("m", "").startswith("0x"):
-                print(f"{cmd} = {readMemory(hexToInt(cmd.replace('m', '')))}")
+                print(f"{cmd} = {sayac.readMemory(hexToInt(cmd.replace('m', '')))}")
             else:
-                print(f"{cmd} = {readMemory(extractNumber(cmd, 'm'))}")
+                print(f"{cmd} = {sayac.readMemory(extractNumber(cmd, 'm'))}")
     except ValueError:
         print(f"Error: {extractNumber(cmd, 'r')} is an invalid number")
 
 
-def exeFlagCommand():
-    print(f"GT: {FLAG_GT}")
-    print(f"GT_EQ: {FLAG_GT_EQ}")
-    print(f"EQ: {FLAG_EQ}")
-    print(f"NEQ: {FLAG_NEQ}")
-    print(f"LT: {FLAG_LT}")
-    print(f"LT_EQ: {FLAG_LT_EQ}")
+def exeFlagCommand(sayac: Sayac):
+    print(f"GT: {sayac.FLAG_GT}")
+    print(f"GT_EQ: {sayac.FLAG_GT_EQ}")
+    print(f"EQ: {sayac.FLAG_EQ}")
+    print(f"NEQ: {sayac.FLAG_NEQ}")
+    print(f"LT: {sayac.FLAG_LT}")
+    print(f"LT_EQ: {sayac.FLAG_LT_EQ}")
 
 
-def getInput():
+def getInput(sayac: Sayac):
+    print("sayac>>> ", end="")
     cmd = input().strip()
     if cmd == "":
         return
     elif cmd.startswith("r"):
-        exeRegisterCommand(cmd)
+        exeRegisterCommand(sayac, cmd)
     elif cmd.startswith("m"):
-        exeMemoryCommand(cmd)
+        exeMemoryCommand(sayac, cmd)
     elif cmd == "f":
-        exeFlagCommand()
+        exeFlagCommand(sayac)
     elif cmd == "a":
         print("Registers:")
-        exeRegisterCommand("r")
+        exeRegisterCommand(sayac, "r")
         print("Memory:")
-        exeMemoryCommand("m")
+        exeMemoryCommand(sayac, "m")
         print("Flags:")
-        exeFlagCommand()
+        exeFlagCommand(sayac)
     else:
         print("Invalid command")
-    getInput()
+    getInput(sayac)
 
 
 # Exceptions
@@ -215,7 +227,7 @@ def intToBin(num: str, n: int):
     return binNum
 
 
-def parseInstruction(ins, line):
+def parseInstruction(ins, line, sayac: Sayac):
     insSplitted = ins.strip().split(" ")
     if len(insSplitted) < 1:
         raise AssemblySyntaxError(f"No instruction on line {line}")
@@ -367,18 +379,18 @@ def parseInstruction(ins, line):
 
 def assemble(insFileName, lineByLine: bool):
     try:
+        sayac = Sayac()
         # open the SAYAC Assembly code from the path given
         insFile = open(insFileName, "r")
         insLines = insFile.readlines()
         insFile.close()
-        binFileLines = []
         for lineIndex in range(0, len(insLines)):
-            parseInstruction(insLines[lineIndex], lineIndex + 1)
+            parseInstruction(insLines[lineIndex], lineIndex + 1, sayac)
             if lineByLine:
                 print(insLines[lineIndex])
-                getInput()
+                getInput(sayac)
         print("Successfully Assembled!")
-        getInput()
+        getInput(sayac)
     except FileNotFoundError:
         print(f"Error: File not found --> ['{insFileName}' does not exists]")
     except KeyError as e:
