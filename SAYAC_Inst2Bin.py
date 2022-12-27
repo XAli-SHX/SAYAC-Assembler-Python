@@ -75,7 +75,7 @@ INS_REQUIRED_ARGS_COUNT = {
 
 def main():
     # App info
-    print(f"SAYAC Assembler {VERSION}")
+    print(f"SAYAC Instruction to Binary Converter {VERSION}")
 
     if len(sys.argv) < 2:
         print("Error: Not enough arguments --> [file name not found]")
