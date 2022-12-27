@@ -245,9 +245,11 @@ def parseInstruction(ins, line, sayac: Sayac):
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         sayac.registers[int(rd)] = sayac.readMemory(sayac.registers[int(rs1)])
     elif insType == INS_LdRio:
+        # LdRio rd rs1
+        # rd <- memio[rs1]
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"0010_00_1_0_{intToBin(rs1, 4)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = sayac.readMemory(sayac.registers[int(rs1)], True)
     elif insType == INS_STR:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
