@@ -58,6 +58,8 @@ registers, changed memory addresses and flags with name `<inst_file_name>.sayac.
 
 - memory IO peripheral
 
+- Support Comments
+
 ## Info
 
 - python version: 3.8
