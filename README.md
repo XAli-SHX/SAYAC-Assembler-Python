@@ -51,6 +51,9 @@ After assembling the file, you can use the following commands (in both line-by-l
 
 Notice that the assembler will keep getting input until user gives blank line as input.
 
+Also, after assembling the instruction file, an output file that shows the registers, changed memory addresses and flags
+with name `out.sayac.json` will be created.
+
 ## Info
 
 - python version: 3.8
