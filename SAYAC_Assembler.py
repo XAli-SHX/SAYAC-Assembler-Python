@@ -86,6 +86,7 @@ class Sayac:
         self.FLAG_NEQ = False
         self.FLAG_LT = False
         self.FLAG_LT_EQ = False
+        self.PC = 0
 
     def createAssemblerOutJsonFile(self, name: str):
         f = open(f"{name}.sayac.json", "w")
@@ -263,14 +264,20 @@ def parseInstruction(ins, line, sayac: Sayac):
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         sayac.writeMemory(sayac.registers[int(rd)], sayac.registers[int(rs1)], True)
     elif insType == INS_JMR:
+        # JMR rd rs1
+        # PC <- PC + rs1
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"0010_10_0_0_{intToBin(rs1, 4)}_{intToBin(rd, 4)}"
+        sayac.PC += sayac.registers[int(rs1)]
         pass
     elif insType == INS_JMRs:
+        # JMRs rd rs1
+        # PC <- PC + rs1
+        # rd <- PC + 1
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"0010_10_1_0_{intToBin(rs1, 4)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = sayac.PC + 1
+        sayac.PC += sayac.registers[int(rs1)]
     elif insType == INS_JMI:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
