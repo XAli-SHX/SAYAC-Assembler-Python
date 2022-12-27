@@ -51,8 +51,8 @@ After assembling the file, you can use the following commands (in both line-by-l
 
 Notice that the assembler will keep getting input until user gives blank line as input.
 
-Also, after assembling the instruction file, an output file that shows the registers, changed memory addresses and flags
-with name `out.sayac.json` will be created.
+Also, after assembling the instruction file, an output file with the same name of the instruction file that shows the
+registers, changed memory addresses and flags with name `<inst_file_name>.sayac.json` will be created.
 
 ## Info
 
