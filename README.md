@@ -54,6 +54,10 @@ Notice that the assembler will keep getting input until user gives blank line as
 Also, after assembling the instruction file, an output file with the same name of the instruction file that shows the
 registers, changed memory addresses and flags with name `<inst_file_name>.sayac.json` will be created.
 
+## ToDo
+
+- memory IO peripheral
+
 ## Info
 
 - python version: 3.8
