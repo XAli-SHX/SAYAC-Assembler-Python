@@ -2,7 +2,7 @@ import sys
 import os
 
 # constants
-VERSION = "v1.0.0-alpha02"
+VERSION = "v1.0.0-alpha01"
 
 INS_LdR = "ldr"  # load from memory
 INS_LdRio = "ldrio"  # load from I/O peripheral
@@ -12,7 +12,7 @@ INS_JMR = "jmr"  # Jump to address
 INS_JMRs = "jmrs"  # Jump to address & save PC
 INS_JMI = "jmi"  # Jump to immediate address
 INS_ANR = "anr"  # Logical AND operation
-INS_AND = "and"  # Logical AND operation
+INS_AND = "and"  # Logical AND operation # TODO: remove this line (instruction is not in the ISR)
 INS_ANI = "ani"  # Logical AND operation with immediate value
 INS_MSI = "msi"  # Move low sign extended immediate to register
 INS_MHI = "mhi"  # Move high immediate to register
@@ -72,6 +72,53 @@ INS_REQUIRED_ARGS_COUNT = {
     INS_NTD2c: 1,
 }
 
+registers = [i for i in range(0, 16)]
+memory = {}
+
+# Flags
+FLAG_GT = False
+FLAG_GT_EQ = False
+FLAG_EQ = False
+FLAG_NEQ = False
+FLAG_LT = False
+FLAG_LT_EQ = False
+
+
+def FIBtoFlag(fib5bit: str):
+    if len(fib5bit) != 5:
+        raise Exception("FIB must be 5 bit")
+    global FLAG_GT
+    global FLAG_GT_EQ
+    global FLAG_EQ
+    global FLAG_NEQ
+    global FLAG_LT
+    global FLAG_LT_EQ
+    fib = fib5bit[2:]
+    if fib == "000":
+        return FLAG_EQ
+    elif fib == "001":
+        return FLAG_LT
+    elif fib == "010":
+        return FLAG_GT
+    elif fib == "011":
+        return FLAG_GT_EQ
+    elif fib == "100":
+        return FLAG_LT_EQ
+    elif fib == "101":
+        return FLAG_NEQ
+    else:
+        raise Exception("Invalid FIB")
+
+
+def readMemory(address: int):
+    if address in memory:
+        return memory[address]
+    return address
+
+
+def writeMemory(address: str, value: int):
+    memory[address] = value
+
 
 def main():
     # App info
@@ -83,22 +130,70 @@ def main():
 
     # get file name from terminal
     insFileName = sys.argv[1]
-    if insFileName.startswith("--all"):
-        assembleAll(insFileName.strip())
-    else:
-        assemble(insFileName)
+    lineByLine = False
+    if len(sys.argv) > 2:
+        if sys.argv[2] == "--line":
+            lineByLine = True
+    assemble(insFileName, lineByLine)
 
 
-def assembleAll(allCmd):
-    typeFilter = None
-    if allCmd.__contains__("="):
-        typeFilter = allCmd.split("=")[1]
-    for insFileName in os.listdir("./"):
-        if typeFilter is not None:
-            if insFileName.endswith(typeFilter):
-                assemble(insFileName)
+def extractNumber(cmd: str, excludeLetter: str):
+    cmd = cmd.replace(excludeLetter, "")
+    return int(cmd)
+
+
+def exeRegisterCommand(cmd: str):
+    try:
+        if cmd == "r":
+            print(registers)
         else:
-            assemble(insFileName)
+            print(f"{cmd} = {registers[extractNumber(cmd, 'r')]}")
+    except ValueError:
+        print(f"Error: {extractNumber(cmd, 'r')} is an invalid number")
+
+
+def exeMemoryCommand(cmd: str):
+    try:
+        if cmd == "m":
+            print(memory)
+        else:
+            if cmd.replace("m", "").startswith("0x"):
+                print(f"{cmd} = {readMemory(hexToInt(cmd.replace('m', '')))}")
+            else:
+                print(f"{cmd} = {readMemory(extractNumber(cmd, 'm'))}")
+    except ValueError:
+        print(f"Error: {extractNumber(cmd, 'r')} is an invalid number")
+
+
+def exeFlagCommand():
+    print(f"GT: {FLAG_GT}")
+    print(f"GT_EQ: {FLAG_GT_EQ}")
+    print(f"EQ: {FLAG_EQ}")
+    print(f"NEQ: {FLAG_NEQ}")
+    print(f"LT: {FLAG_LT}")
+    print(f"LT_EQ: {FLAG_LT_EQ}")
+
+
+def getInput():
+    cmd = input().strip()
+    if cmd == "":
+        return
+    elif cmd.startswith("r"):
+        exeRegisterCommand(cmd)
+    elif cmd.startswith("m"):
+        exeMemoryCommand(cmd)
+    elif cmd == "f":
+        exeFlagCommand()
+    elif cmd == "a":
+        print("Registers:")
+        exeRegisterCommand("r")
+        print("Memory:")
+        exeMemoryCommand("m")
+        print("Flags:")
+        exeFlagCommand()
+    else:
+        print("Invalid command")
+    getInput()
 
 
 # Exceptions
@@ -108,7 +203,7 @@ class AssemblySyntaxError(Exception):
 
 
 def hexToInt(num: str):
-    if num.__contains__("0x"):
+    if num.startswith("0x"):
         return int(num, 0)
     return int(num, 16)
 
@@ -270,7 +365,7 @@ def parseInstruction(ins, line):
         raise Exception("Uncaught!")
 
 
-def assemble(insFileName):
+def assemble(insFileName, lineByLine: bool):
     try:
         # open the SAYAC Assembly code from the path given
         insFile = open(insFileName, "r")
@@ -278,14 +373,12 @@ def assemble(insFileName):
         insFile.close()
         binFileLines = []
         for lineIndex in range(0, len(insLines)):
-            binFileLines.append(parseInstruction(insLines[lineIndex], lineIndex + 1))
-        binFileName = insFileName.rsplit(".", maxsplit=1)[0]
-        binFile = open(binFileName + ".bin", "w")
-        binFile.write("\n")
-        for lineIndex in range(0, len(insLines)):
-            binFile.write(f"{binFileLines[lineIndex]}\n")
-        binFile.close()
+            parseInstruction(insLines[lineIndex], lineIndex + 1)
+            if lineByLine:
+                print(insLines[lineIndex])
+                getInput()
         print("Successfully Assembled!")
+        getInput()
     except FileNotFoundError:
         print(f"Error: File not found --> ['{insFileName}' does not exists]")
     except KeyError as e:
