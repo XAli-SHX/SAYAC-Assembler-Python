@@ -444,13 +444,26 @@ def parseInstruction(ins, line, sayac: Sayac):
         if sayac.FIBtoFlag(FIB):
             sayac.PC += sayac.registers[int(rd)]
     elif insType == INS_SHI:
+        # SHI imm rd
+        # rd <- rd << (+- imm)
         shimm = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
-        return f"1111_10_0_{intToBin(shimm, 5)}_{intToBin(rd, 4)}"
+        if int(shimm) < 0:
+            sayac.registers[int(rd)] = sayac.registers[int(rd)] << int(abs(shimm))
+        else:
+            sayac.registers[int(rd)] = sayac.registers[int(rd)] >> int(shimm)
     elif insType == INS_SHIla:
+        # SHIla imm rd
+        # rd <- rd <<< (+- imm)
         shimm = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
-        return f"1111_10_1_{intToBin(shimm, 5)}_{intToBin(rd, 4)}"
+        if int(shimm) < 0:
+            sayac.registers[int(rd)] = sayac.registers[int(rd)] << int(abs(shimm))
+        else:
+            if intToBin(str(sayac.registers[int(rd)]), 16)[0] == "0":
+                sayac.registers[int(rd)] = sayac.registers[int(rd)] >> int(shimm)
+            else:
+                sayac.registers[int(rd)] = int("1" * int(shimm) + str(sayac.registers[int(rd)] >> int(shimm)))
     elif insType == INS_NTR:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
