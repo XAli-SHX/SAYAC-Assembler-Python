@@ -465,19 +465,25 @@ def parseInstruction(ins, line, sayac: Sayac):
             else:
                 sayac.registers[int(rd)] = int("1" * int(shimm) + str(sayac.registers[int(rd)] >> int(shimm)))
     elif insType == INS_NTR:
+        # NTR rd rs1
+        # rd <- ~rs1
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"1111_110_0_{intToBin(rs1, 4)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = ~sayac.registers[int(rs1)]
     elif insType == INS_NTR2c:
+        # NTR2c rd rs1
+        # rd <- ~rs1 + 1
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"1111_110_1_{intToBin(rs1, 4)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = ~sayac.registers[int(rs1)] + 1
     elif insType == INS_NTD:
+        # NTD rd
         rd = insSplitted[1].replace("_", "").replace("r", "")
-        return f"1111_111_0_0000_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = ~sayac.registers[int(rd)]
     elif insType == INS_NTD2c:
+        # NTD2c rd
         rd = insSplitted[1].replace("_", "").replace("r", "")
-        return f"1111_111_1_0000_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = ~sayac.registers[int(rd)] + 1
     else:
         raise Exception("Uncaught!")
 
