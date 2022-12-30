@@ -356,10 +356,12 @@ def parseInstruction(ins, line, sayac: Sayac):
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
         sayac.registers[int(rd)] = sayac.registers[int(rs1)] + sayac.registers[int(rs2)]
     elif insType == INS_ADR:
+        # ADR rd rs1 rs2
+        # rd <- rs1 + rs2
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
-        return f"1001_{intToBin(rs1, 4)}_{intToBin(rs2, 4)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = sayac.registers[int(rs1)] + sayac.registers[int(rs2)]
     elif insType == INS_SUB:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
