@@ -442,9 +442,9 @@ def parseInstruction(ins, line, sayac: Sayac):
         shimm = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
         if int(shimm) < 0:
-            sayac.registers[int(rd)] = sayac.registers[int(rd)] << int(abs(shimm))
+            sayac.registers[int(rd)] = abs(sayac.registers[int(rd)]) << int(abs(shimm))
         else:
-            sayac.registers[int(rd)] = sayac.registers[int(rd)] >> int(shimm)
+            sayac.registers[int(rd)] = abs(sayac.registers[int(rd)]) >> int(shimm)
     elif insType == INS_SHIla:
         # SHIla imm rd
         # rd <- rd <<< (+- imm)
@@ -453,10 +453,7 @@ def parseInstruction(ins, line, sayac: Sayac):
         if int(shimm) < 0:
             sayac.registers[int(rd)] = sayac.registers[int(rd)] << int(abs(shimm))
         else:
-            if intToBin(str(sayac.registers[int(rd)]), 16)[0] == "0":
-                sayac.registers[int(rd)] = sayac.registers[int(rd)] >> int(shimm)
-            else:
-                sayac.registers[int(rd)] = int("1" * int(shimm) + str(sayac.registers[int(rd)] >> int(shimm)))
+            sayac.registers[int(rd)] = sayac.registers[int(rd)] >> int(shimm)
     elif insType == INS_NTR:
         # NTR rd rs1
         # rd <- ~rs1
