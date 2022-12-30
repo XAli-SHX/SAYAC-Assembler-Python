@@ -331,12 +331,23 @@ def parseInstruction(ins, line, sayac: Sayac):
         else:
             # TODO: see how to deal with rs2_4to0 (sign & mag OR two's comp.)
             sayac.registers[int(rd)] = sayac.registers[int(rs1)] >> int(rs2_4to0, 2)
-
     elif insType == INS_SAR:
+        # SAR rd rs1 rs2
+        # rd <- rs1 <<< (+- rs2[4:0])
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
-        return f"1000_{intToBin(rs1, 4)}_{intToBin(rs2, 4)}_{intToBin(rd, 4)}"
+        rs2_4to0 = intToBin(str(sayac.registers[int(rs2)]), 5)
+        rs1_sign = intToBin(str(sayac.registers[int(rs1)]), 16)[0]
+        if rs2_4to0[0] == "0":
+            shv = int(rs2_4to0, 2)
+            if rs1_sign == "0":
+                sayac.registers[int(rd)] = sayac.registers[int(rs1)] >> shv
+            else:
+                sayac.registers[int(rd)] = int("1" * shv + str(sayac.registers[int(rs1)] >> shv))
+        else:
+            # TODO: see how to deal with rs2_4to0 (sign & mag OR two's comp.)
+            sayac.registers[int(rd)] = sayac.registers[int(rs1)] >> int(rs2_4to0, 2)
     elif insType == INS_ADD:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
