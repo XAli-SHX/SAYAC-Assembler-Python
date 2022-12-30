@@ -286,7 +286,6 @@ def parseInstruction(ins, line, sayac: Sayac):
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         sayac.PC += sayac.registers[int(rs1)]
-        pass
     elif insType == INS_JMRs:
         # JMRs rd rs1
         # PC <- PC + rs1
