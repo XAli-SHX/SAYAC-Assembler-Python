@@ -423,11 +423,12 @@ def parseInstruction(ins, line, sayac: Sayac):
         # CMR rs1 rs2
         rs1 = insSplitted[1].replace("_", "").replace("r", "")
         rs2 = insSplitted[2].replace("_", "").replace("r", "")
-        if sayac.registers[int(rs1)] == sayac.registers[int(rs2)]:
+        sayac.setFlags(sayac.registers[int(rs1)], sayac.registers[int(rs2)])
     elif insType == INS_CMI:
+        # CMI rs1 imm
         imm = insSplitted[1]
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"1111_001_{intToBin(imm, 5)}_{intToBin(rs1, 4)}"
+        sayac.setFlags(sayac.registers[int(rs1)], int(imm))
     elif insType == INS_BRC:
         FIB = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
