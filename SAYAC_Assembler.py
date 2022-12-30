@@ -344,10 +344,9 @@ def parseInstruction(ins, line, sayac: Sayac):
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
         rs2_4to0 = intToBin(str(sayac.registers[int(rs2)]), 5)
         if rs2_4to0[0] == "0":
-            sayac.registers[int(rd)] = sayac.registers[int(rs1)] >> int(rs2_4to0, 2)
+            sayac.registers[int(rd)] = abs(sayac.registers[int(rs1)]) >> int(rs2_4to0, 2)
         else:
-            # TODO: see how to deal with rs2_4to0 (sign & mag OR two's comp.)
-            sayac.registers[int(rd)] = sayac.registers[int(rs1)] >> int(rs2_4to0, 2)
+            sayac.registers[int(rd)] = abs(sayac.registers[int(rs1)]) >> int(rs2_4to0[1:], 2)
     elif insType == INS_SAR:
         # SAR rd rs1 rs2
         # rd <- rs1 <<< (+- rs2[4:0])
