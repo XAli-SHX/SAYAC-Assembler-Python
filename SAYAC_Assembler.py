@@ -279,9 +279,13 @@ def parseInstruction(ins, line, sayac: Sayac):
         sayac.registers[int(rd)] = sayac.PC + 1
         sayac.PC += sayac.registers[int(rs1)]
     elif insType == INS_JMI:
+        # JMI rd imm
+        # PC <- PC + imm
+        # rd <- PC + 1
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        return f"0010_11_{intToBin(imm, 6)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = sayac.PC + 1
+        sayac.PC += int(imm)
     elif insType == INS_ANR:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
