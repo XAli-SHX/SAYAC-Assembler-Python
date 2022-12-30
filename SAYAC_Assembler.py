@@ -377,13 +377,17 @@ def parseInstruction(ins, line, sayac: Sayac):
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
         sayac.registers[int(rd)] = sayac.registers[int(rs1)] - sayac.registers[int(rs2)]
     elif insType == INS_ADI:
+        # ADI rd imm
+        # rd <- rd + imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        return f"1011_{intToBin(imm, 8)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = sayac.registers[int(rd)] + int(imm)
     elif insType == INS_SUI:
+        # SUI rd imm
+        # rd <- rd - imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        return f"1100_{intToBin(imm, 8)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = sayac.registers[int(rd)] - int(imm)
     elif insType == INS_MUL:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
