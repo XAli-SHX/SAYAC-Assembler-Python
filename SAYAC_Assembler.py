@@ -330,6 +330,7 @@ def parseInstruction(ins, line, sayac: Sayac):
         imm = insSplitted[2]
         sayac.registers[int(rd)] = imm
     elif insType == INS_MHI:
+        # TODO: check the operation
         # MHI rd imm
         # rd[15:8] <- imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
