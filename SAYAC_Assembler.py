@@ -285,7 +285,7 @@ def parseInstruction(ins, line, sayac: Sayac):
         # PC <- PC + rs1
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        sayac.PC += sayac.registers[int(rs1)]
+        sayac.PC += sayac.registers[int(rs1)] - 1
     elif insType == INS_JMRs:
         # JMRs rd rs1
         # PC <- PC + rs1
@@ -293,7 +293,7 @@ def parseInstruction(ins, line, sayac: Sayac):
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         sayac.registers[int(rd)] = sayac.PC + 1
-        sayac.PC += sayac.registers[int(rs1)]
+        sayac.PC += sayac.registers[int(rs1)] - 1
     elif insType == INS_JMI:
         # JMI rd imm
         # PC <- PC + imm
@@ -301,7 +301,7 @@ def parseInstruction(ins, line, sayac: Sayac):
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
         sayac.registers[int(rd)] = sayac.PC + 1
-        sayac.PC += int(imm)
+        sayac.PC += int(imm) - 1
     elif insType == INS_ANR:
         # ANR rd rs1 rs2
         # rd <- rs1 & rs2
@@ -428,14 +428,14 @@ def parseInstruction(ins, line, sayac: Sayac):
         FIB = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
         if sayac.FIBtoFlag(FIB):
-            sayac.PC = sayac.registers[int(rd)]
+            sayac.PC = sayac.registers[int(rd)] - 1
     elif insType == INS_BRR:
         # BRR cond rd
         # if (cond) pc <- pc + rd
         FIB = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
         if sayac.FIBtoFlag(FIB):
-            sayac.PC += sayac.registers[int(rd)]
+            sayac.PC += sayac.registers[int(rd)] - 1
     elif insType == INS_SHI:
         # SHI imm rd
         # rd <- rd << (+- imm)
