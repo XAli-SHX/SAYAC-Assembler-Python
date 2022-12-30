@@ -430,13 +430,19 @@ def parseInstruction(ins, line, sayac: Sayac):
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         sayac.setFlags(sayac.registers[int(rs1)], int(imm))
     elif insType == INS_BRC:
+        # BRC cond rd
+        # if (cond) pc <- rd
         FIB = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
-        return f"1111_010_{intToBin(str(hexToInt(FIB)), 5)}_{intToBin(rd, 4)}"
+        if sayac.FIBtoFlag(FIB):
+            sayac.PC = sayac.registers[int(rd)]
     elif insType == INS_BRR:
+        # BRR cond rd
+        # if (cond) pc <- pc + rd
         FIB = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
-        return f"1111_011_{intToBin(str(hexToInt(FIB)), 5)}_{intToBin(rd, 4)}"
+        if sayac.FIBtoFlag(FIB):
+            sayac.PC += sayac.registers[int(rd)]
     elif insType == INS_SHI:
         shimm = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
