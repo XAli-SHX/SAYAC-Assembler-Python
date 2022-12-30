@@ -320,10 +320,18 @@ def parseInstruction(ins, line, sayac: Sayac):
         imm = insSplitted[2]
         sayac.registers[int(rd)] = imm << 8
     elif insType == INS_SLR:
+        # SLR rd rs1 rs2
+        # rd <- rs1 << (+- rs2[4:0])
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
-        return f"0111_{intToBin(rs1, 4)}_{intToBin(rs2, 4)}_{intToBin(rd, 4)}"
+        rs2_4to0 = intToBin(str(sayac.registers[int(rs2)]), 5)
+        if rs2_4to0[0] == "0":
+            sayac.registers[int(rd)] = sayac.registers[int(rs1)] >> int(rs2_4to0, 2)
+        else:
+            # TODO: see how to deal with rs2_4to0 (sign & mag OR two's comp.)
+            sayac.registers[int(rd)] = sayac.registers[int(rs1)] >> int(rs2_4to0, 2)
+
     elif insType == INS_SAR:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
