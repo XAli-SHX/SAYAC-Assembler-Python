@@ -135,6 +135,23 @@ class Sayac:
         memory = self.memoryIO if fromIO else self.memory
         memory[address] = value
 
+    def setFlags(self, val1: int, val2: int):
+        self.FLAG_GT = False
+        self.FLAG_GT_EQ = False
+        self.FLAG_EQ = False
+        self.FLAG_NEQ = True
+        self.FLAG_LT = False
+        self.FLAG_LT_EQ = False
+        if val1 == val2:
+            self.FLAG_EQ = True
+            self.FLAG_NEQ = False
+            self.FLAG_LT_EQ = True
+            self.FLAG_GT_EQ = True
+        if val1 > val2:
+            self.FLAG_GT = True
+        if val1 < val2:
+            self.FLAG_LT = True
+
 
 def main():
     # App info
@@ -403,9 +420,10 @@ def parseInstruction(ins, line, sayac: Sayac):
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
         sayac.registers[int(rd)] = int(sayac.registers[int(rs1)] / sayac.registers[int(rs2)])
     elif insType == INS_CMR:
+        # CMR rs1 rs2
         rs1 = insSplitted[1].replace("_", "").replace("r", "")
         rs2 = insSplitted[2].replace("_", "").replace("r", "")
-        return f"1111_000_0_{intToBin(rs2, 4)}_{intToBin(rs1, 4)}"
+        if sayac.registers[int(rs1)] == sayac.registers[int(rs2)]:
     elif insType == INS_CMI:
         imm = insSplitted[1]
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
