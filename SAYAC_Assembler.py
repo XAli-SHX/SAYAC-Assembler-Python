@@ -401,11 +401,13 @@ def assemble(insFileName, lineByLine: bool):
         insFile = open(insFileName, "r")
         insLines = insFile.readlines()
         insFile.close()
-        for lineIndex in range(0, len(insLines)):
+        while sayac.PC in range(0, len(insLines)):
+            lineIndex = sayac.PC
             parseInstruction(insLines[lineIndex], lineIndex + 1, sayac)
             if lineByLine:
                 print(insLines[lineIndex])
                 getInput(sayac)
+            sayac.PC += 1
         print("Successfully Assembled!")
         getInput(sayac)
     except FileNotFoundError:
