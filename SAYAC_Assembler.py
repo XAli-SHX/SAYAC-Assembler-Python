@@ -288,21 +288,25 @@ def parseInstruction(ins, line, sayac: Sayac):
         sayac.PC += int(imm)
     elif insType == INS_ANR:
         # ANR rd rs1 rs2
+        # rd <- rs1 & rs2
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
         sayac.registers[int(rd)] = sayac.registers[int(rs1)] & sayac.registers[int(rs2)]
     elif insType == INS_AND:
-        # AND rd rs1 imm
+        # ANR rd rs1 rs2
+        # rd <- rs1 & rs2
         # TODO: remove this instruction
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
         sayac.registers[int(rd)] = sayac.registers[int(rs1)] & sayac.registers[int(rs2)]
     elif insType == INS_ANI:
+        # ANI rd imm
+        # rd <- rd & imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        return f"0100_{intToBin(imm, 8)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = sayac.registers[int(rd)] & int(imm)
     elif insType == INS_MSI:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
