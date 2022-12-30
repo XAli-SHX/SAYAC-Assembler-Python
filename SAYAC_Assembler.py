@@ -314,9 +314,11 @@ def parseInstruction(ins, line, sayac: Sayac):
         imm = insSplitted[2]
         sayac.registers[int(rd)] = imm
     elif insType == INS_MHI:
+        # MHI rd imm
+        # rd[15:8] <- imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        return f"0110_{intToBin(imm, 8)}_{intToBin(rd, 4)}"
+        sayac.registers[int(rd)] = imm << 8
     elif insType == INS_SLR:
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
