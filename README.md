@@ -49,6 +49,13 @@ After assembling the file, you can use the following commands (in both line-by-l
 - `f` print all the flags and their values
 - `a` print all the registers, changed memory addresses and flags
 
+#### Supported type of numbers for immediate values
+
+The default base of number is 10, but you can use the following prefixes to change the base:
+
+- `0b` for binary
+- `0x` for hexadecimal
+
 Notice that the assembler will keep getting input until user gives blank line as input.
 
 Also, after assembling the instruction file, an output file with the same name of the instruction file that shows the
