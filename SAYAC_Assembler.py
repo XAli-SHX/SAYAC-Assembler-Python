@@ -332,14 +332,14 @@ def parseInstruction(ins, line, sayac: Sayac):
         # rd[7:0] <- SE(imm)
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        sayac.registers[int(rd)] = imm
+        sayac.registers[int(rd)] = int(imm)
     elif insType == INS_MHI:
         # TODO: check the operation
         # MHI rd imm
         # rd[15:8] <- imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        sayac.registers[int(rd)] = imm << 8
+        sayac.registers[int(rd)] = int(imm) << 8
     elif insType == INS_SLR:
         # SLR rd rs1 rs2
         # rd <- rs1 << (+- rs2[4:0])
