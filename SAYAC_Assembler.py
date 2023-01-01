@@ -76,17 +76,17 @@ INS_REQUIRED_ARGS_COUNT = {
 
 class Sayac:
     def __init__(self):
-        self.registers = [i for i in range(0, 16)]
+        self.registers: list = [i for i in range(0, 16)]
         self.memory = {}
         self.memoryIO = {}
         # Flags
-        self.FLAG_GT = False
-        self.FLAG_GT_EQ = False
-        self.FLAG_EQ = False
-        self.FLAG_NEQ = False
-        self.FLAG_LT = False
-        self.FLAG_LT_EQ = False
-        self.PC = 0
+        self.FLAG_GT: bool = False
+        self.FLAG_GT_EQ: bool = False
+        self.FLAG_EQ: bool = False
+        self.FLAG_NEQ: bool = False
+        self.FLAG_LT: bool = False
+        self.FLAG_LT_EQ: bool = False
+        self.PC: int = 0
 
     def createAssemblerOutJsonFile(self, name: str):
         f = open(f"{name}.sayac.json", "w")
