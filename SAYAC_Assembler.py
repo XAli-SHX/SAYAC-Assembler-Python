@@ -92,7 +92,9 @@ def commentRemover(lines: list):
         re.DOTALL | re.MULTILINE
     )
     newText = re.sub(pattern, replacer, text)
-    return newText.split(";")
+    newList = newText.split(";")
+    newList = [line.strip() for line in newList if line.strip() != ""]
+    return newList
 
 
 class Sayac:
