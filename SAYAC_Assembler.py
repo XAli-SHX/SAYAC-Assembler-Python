@@ -83,7 +83,7 @@ class Sayac:
         self.FLAG_GT: bool = False
         self.FLAG_GT_EQ: bool = False
         self.FLAG_EQ: bool = False
-        self.FLAG_NEQ: bool = False
+        self.FLAG_NEQ: bool = True
         self.FLAG_LT: bool = False
         self.FLAG_LT_EQ: bool = False
         self.PC: int = 0
