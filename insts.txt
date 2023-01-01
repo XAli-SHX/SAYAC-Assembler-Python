@@ -12,9 +12,9 @@ LDR __r2 __r5
 MSI __r5 101
 LDR __r3 __r5
 CMR __r2 __r3
-SHI __r15 4
+SHI 4 __r15
 ADD __r2 __r15 __r0
-SHI __r15 1
+SHI 1 __r15
 ADD __r3 __r15 __r0
 ADD __r4 __r2 __r3
 AND __r3 __r2 __r3
@@ -26,9 +26,9 @@ LDR __r2 __r5
 MSI __r5 102
 LDR __r3 __r5
 CMR __r2 __r3
-SHI __r15 4
+SHI 4 __r15
 ADD __r2 __r15 __r0
-SHI __r15 1
+SHI 1 __r15
 ADD __r3 __r15 __r0
 ADD __r4 __r2 __r3
 AND __r3 __r2 __r3
@@ -44,7 +44,7 @@ MSI __r5 106
 STR __r5 __r2
 MSI __r5 106
 LDR __r2 __r5
-SHI __r2 -15
+SHI -15 __r2
 CMR __r2 __r0
 MSI __r2 4
 BRR 0x000 __r2
@@ -57,9 +57,9 @@ LDR __r2 __r5
 MSI __r5 100
 LDR __r3 __r5
 CMR __r2 __r3
-SHI __r15 4
+SHI 4 __r15
 ADD __r2 __r15 __r0
-SHI __r15 1
+SHI 1 __r15
 ADD __r3 __r15 __r0
 ADD __r4 __r2 __r3
 AND __r3 __r2 __r3
@@ -71,9 +71,9 @@ LDR __r2 __r5
 MSI __r5 102
 LDR __r3 __r5
 CMR __r2 __r3
-SHI __r15 4
+SHI 4 __r15
 ADD __r2 __r15 __r0
-SHI __r15 1
+SHI 1 __r15
 ADD __r3 __r15 __r0
 ADD __r4 __r2 __r3
 AND __r3 __r2 __r3
@@ -89,7 +89,7 @@ MSI __r5 109
 STR __r5 __r2
 MSI __r5 109
 LDR __r2 __r5
-SHI __r2 -15
+SHI -15 __r2
 CMR __r2 __r0
 MSI __r2 4
 BRR 0x000 __r2
@@ -102,9 +102,9 @@ LDR __r2 __r5
 MSI __r5 100
 LDR __r3 __r5
 CMR __r2 __r3
-SHI __r15 4
+SHI 4 __r15
 ADD __r2 __r15 __r0
-SHI __r15 1
+SHI 1 __r15
 ADD __r3 __r15 __r0
 ADD __r4 __r2 __r3
 AND __r3 __r2 __r3
@@ -116,9 +116,9 @@ LDR __r2 __r5
 MSI __r5 101
 LDR __r3 __r5
 CMR __r2 __r3
-SHI __r15 4
+SHI 4 __r15
 ADD __r2 __r15 __r0
-SHI __r15 1
+SHI 1 __r15
 ADD __r3 __r15 __r0
 ADD __r4 __r2 __r3
 AND __r3 __r2 __r3
@@ -134,7 +134,7 @@ MSI __r5 112
 STR __r5 __r2
 MSI __r5 112
 LDR __r2 __r5
-SHI __r2 -15
+SHI -15 __r2
 CMR __r2 __r0
 MSI __r2 4
 BRR 0x000 __r2
