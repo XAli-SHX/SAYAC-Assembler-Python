@@ -170,9 +170,9 @@ def main():
     assemble(insFileName, lineByLine)
 
 
-def extractNumber(cmd: str, excludeLetter: str):
+def extractInt(cmd: str, excludeLetter: str):
     cmd = cmd.replace(excludeLetter, "")
-    return int(cmd)
+    return baseNumberToInt(cmd)
 
 
 def exeRegisterCommand(sayac: Sayac, cmd: str):
@@ -180,9 +180,9 @@ def exeRegisterCommand(sayac: Sayac, cmd: str):
         if cmd == "r":
             print(sayac.registers)
         else:
-            print(f"{cmd} = {sayac.registers[extractNumber(cmd, 'r')]}")
+            print(f"{cmd} = {sayac.registers[extractInt(cmd, 'r')]}")
     except ValueError:
-        print(f"Error: {extractNumber(cmd, 'r')} is an invalid number")
+        print(f"Error: {extractInt(cmd, 'r')} is an invalid number")
 
 
 def exeMemoryCommand(sayac: Sayac, cmd: str):
@@ -190,12 +190,9 @@ def exeMemoryCommand(sayac: Sayac, cmd: str):
         if cmd == "m":
             print(sayac.memory)
         else:
-            if cmd.replace("m", "").startswith("0x"):
-                print(f"{cmd} = {sayac.readMemory(hexToInt(cmd.replace('m', '')))}")
-            else:
-                print(f"{cmd} = {sayac.readMemory(extractNumber(cmd, 'm'))}")
+            print(f"{cmd} = {sayac.readMemory(extractInt(cmd, 'm'))}")
     except ValueError:
-        print(f"Error: {extractNumber(cmd, 'r')} is an invalid number")
+        print(f"Error: {extractInt(cmd, 'r')} is an invalid number")
 
 
 def exeFlagCommand(sayac: Sayac):
@@ -246,11 +243,21 @@ def hexToInt(num: str):
     return int(num, 16)
 
 
-def intToBin(num: str, n: int):
+def intToBin(num: int, n: int):
     binNum = bin(int(num)).replace("0b", "")[-n:]
     while len(binNum) < n:
         binNum = "0" + binNum
+    if len(binNum) > n:
+        return binNum[-n:]
     return binNum
+
+
+def baseNumberToInt(num: str):
+    if num.startswith("0x"):
+        return hexToInt(num)
+    elif num.startswith("0b"):
+        return int(num, 2)
+    return int(num)
 
 
 def parseInstruction(ins, line, sayac: Sayac):
@@ -305,7 +312,7 @@ def parseInstruction(ins, line, sayac: Sayac):
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
         sayac.registers[int(rd)] = sayac.PC + 1
-        sayac.PC += int(imm) - 1
+        sayac.PC += baseNumberToInt(imm) - 1
     elif insType == INS_ANR:
         # ANR rd rs1 rs2
         # rd <- rs1 & rs2
@@ -326,27 +333,27 @@ def parseInstruction(ins, line, sayac: Sayac):
         # rd <- rd & imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        sayac.registers[int(rd)] = sayac.registers[int(rd)] & int(imm)
+        sayac.registers[int(rd)] = sayac.registers[int(rd)] & baseNumberToInt(imm)
     elif insType == INS_MSI:
         # MSI rd imm
         # rd[7:0] <- SE(imm)
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        sayac.registers[int(rd)] = int(imm)
+        sayac.registers[int(rd)] = baseNumberToInt(imm)
     elif insType == INS_MHI:
         # TODO: check the operation
         # MHI rd imm
         # rd[15:8] <- imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        sayac.registers[int(rd)] = int(imm) << 8
+        sayac.registers[int(rd)] = baseNumberToInt(imm) << 8
     elif insType == INS_SLR:
         # SLR rd rs1 rs2
         # rd <- rs1 << (+- rs2[4:0])
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
-        rs2_4to0 = intToBin(str(sayac.registers[int(rs2)]), 5)
+        rs2_4to0 = intToBin(sayac.registers[int(rs2)], 5)
         if rs2_4to0[0] == "0":
             sayac.registers[int(rd)] = abs(sayac.registers[int(rs1)]) >> int(rs2_4to0, 2)
         else:
@@ -357,7 +364,7 @@ def parseInstruction(ins, line, sayac: Sayac):
         rd = insSplitted[1].replace("_", "").replace("r", "")
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
         rs2 = insSplitted[3].replace("_", "").replace("r", "")
-        rs2_4to0 = intToBin(str(sayac.registers[int(rs2)]), 5)
+        rs2_4to0 = intToBin(sayac.registers[int(rs2)], 5)
         if rs2_4to0[0] == "0":
             sayac.registers[int(rd)] = sayac.registers[int(rs1)] >> int(rs2_4to0, 2)
         else:
@@ -395,13 +402,13 @@ def parseInstruction(ins, line, sayac: Sayac):
         # rd <- rd + imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        sayac.registers[int(rd)] = sayac.registers[int(rd)] + int(imm)
+        sayac.registers[int(rd)] = sayac.registers[int(rd)] + baseNumberToInt(imm)
     elif insType == INS_SUI:
         # SUI rd imm
         # rd <- rd - imm
         rd = insSplitted[1].replace("_", "").replace("r", "")
         imm = insSplitted[2]
-        sayac.registers[int(rd)] = sayac.registers[int(rd)] - int(imm)
+        sayac.registers[int(rd)] = sayac.registers[int(rd)] - baseNumberToInt(imm)
     elif insType == INS_MUL:
         # MUL rd rs1 rs2
         # rd <- rs1 * rs2
@@ -425,25 +432,25 @@ def parseInstruction(ins, line, sayac: Sayac):
         # CMI rs1 imm
         imm = insSplitted[1]
         rs1 = insSplitted[2].replace("_", "").replace("r", "")
-        sayac.setFlags(sayac.registers[int(rs1)], int(imm))
+        sayac.setFlags(sayac.registers[int(rs1)], baseNumberToInt(imm))
     elif insType == INS_BRC:
         # BRC cond rd
         # if (cond) pc <- rd
         FIB = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
-        if sayac.FIBtoFlag(FIB):
+        if sayac.FIBtoFlag(intToBin(baseNumberToInt(FIB), 5)):
             sayac.PC = sayac.registers[int(rd)] - 1
     elif insType == INS_BRR:
         # BRR cond rd
         # if (cond) pc <- pc + rd
         FIB = insSplitted[1]
         rd = insSplitted[2].replace("_", "").replace("r", "")
-        if sayac.FIBtoFlag(FIB):
+        if sayac.FIBtoFlag(intToBin(baseNumberToInt(FIB), 5)):
             sayac.PC += sayac.registers[int(rd)] - 1
     elif insType == INS_SHI:
         # SHI imm rd
         # rd <- rd << (+- imm)
-        shimm = insSplitted[1]
+        shimm = baseNumberToInt(insSplitted[1])
         rd = insSplitted[2].replace("_", "").replace("r", "")
         if int(shimm) < 0:
             sayac.registers[int(rd)] = abs(sayac.registers[int(rd)]) << int(abs(shimm))
@@ -452,7 +459,7 @@ def parseInstruction(ins, line, sayac: Sayac):
     elif insType == INS_SHIla:
         # SHIla imm rd
         # rd <- rd <<< (+- imm)
-        shimm = insSplitted[1]
+        shimm = baseNumberToInt(insSplitted[1])
         rd = insSplitted[2].replace("_", "").replace("r", "")
         if int(shimm) < 0:
             sayac.registers[int(rd)] = sayac.registers[int(rd)] << int(abs(shimm))
