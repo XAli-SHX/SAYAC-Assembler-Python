@@ -1,6 +1,7 @@
 import sys
 import os
 import json
+import re
 
 # constants
 VERSION = "v1.0.0-alpha01"
@@ -72,6 +73,26 @@ INS_REQUIRED_ARGS_COUNT = {
     INS_NTD: 1,
     INS_NTD2c: 1,
 }
+
+
+def commentRemover(lines: list):
+    text = ""
+    for line in lines:
+        text += line + ";"
+
+    def replacer(match):
+        s = match.group(0)
+        if s.startswith('/'):
+            return " "  # note: a space and not an empty string
+        else:
+            return s
+
+    pattern = re.compile(
+        r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
+        re.DOTALL | re.MULTILINE
+    )
+    newText = re.sub(pattern, replacer, text)
+    return newText.split(";")
 
 
 class Sayac:
@@ -496,6 +517,7 @@ def assemble(insFileName, lineByLine: bool):
         insFile = open(insFileName, "r")
         insLines = insFile.readlines()
         insFile.close()
+        insLines = commentRemover(insLines)
         while sayac.PC in range(0, len(insLines)):
             lineIndex = sayac.PC
             parseInstruction(insLines[lineIndex], lineIndex + 1, sayac)
