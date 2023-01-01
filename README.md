@@ -3,7 +3,7 @@
 This project is a one-file python code to get input from the command line and turn that into binary code with the exact
 same name as the input.
 
-## How To Use It
+## How To Use
 
 ### Instruction to Binary
 
@@ -64,8 +64,6 @@ registers, changed memory addresses and flags with name `<inst_file_name>.sayac.
 ## ToDo
 
 - memory IO peripheral
-
-- Support Comments
 
 ## Info
 
