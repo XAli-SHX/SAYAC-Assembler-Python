@@ -524,7 +524,7 @@ def assemble(insFileName, lineByLine: bool):
         while sayac.PC in range(0, len(insLines)):
             lineIndex = sayac.PC
             parseInstruction(insLines[lineIndex], lineIndex + 1, sayac)
-            sayac.createAssemblerOutJsonFile(insFileName)
+            sayac.createAssemblerOutJsonFile(insFileName.rsplit(".", 1)[0])
             if lineByLine:
                 print(insLines[lineIndex])
                 getInput(sayac)
