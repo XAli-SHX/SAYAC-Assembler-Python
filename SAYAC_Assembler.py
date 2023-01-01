@@ -4,7 +4,7 @@ import json
 import re
 
 # constants
-VERSION = "v1.0.0-alpha01"
+VERSION = "v1.0.0-alpha03"
 
 INS_LdR = "ldr"  # load from memory
 INS_LdRio = "ldrio"  # load from I/O peripheral
