@@ -1,5 +1,6 @@
 import sys
 import os
+import re
 
 # constants
 VERSION = "v1.0.0-alpha03"
@@ -71,6 +72,28 @@ INS_REQUIRED_ARGS_COUNT = {
     INS_NTD: 1,
     INS_NTD2c: 1,
 }
+
+
+def commentRemover(lines: list):
+    text = ""
+    for line in lines:
+        text += line + ";"
+
+    def replacer(match):
+        s = match.group(0)
+        if s.startswith('/'):
+            return " "  # note: a space and not an empty string
+        else:
+            return s
+
+    pattern = re.compile(
+        r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
+        re.DOTALL | re.MULTILINE
+    )
+    newText = re.sub(pattern, replacer, text)
+    newList = newText.split(";")
+    newList = [line.strip() for line in newList if line.strip() != ""]
+    return newList
 
 
 def main():
@@ -277,6 +300,7 @@ def assemble(insFileName):
         insLines = insFile.readlines()
         insFile.close()
         binFileLines = []
+        insLines = commentRemover(insLines)
         for lineIndex in range(0, len(insLines)):
             binFileLines.append(parseInstruction(insLines[lineIndex], lineIndex + 1))
         binFileName = insFileName.rsplit(".", maxsplit=1)[0]
