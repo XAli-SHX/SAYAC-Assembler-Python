@@ -208,26 +208,30 @@ def exeFlagCommand(sayac: Sayac):
 
 
 def getInput(sayac: Sayac):
-    print("sayac>>> ", end="")
-    cmd = input().strip()
-    if cmd == "":
-        return
-    elif cmd.startswith("r"):
-        exeRegisterCommand(sayac, cmd)
-    elif cmd.startswith("m"):
-        exeMemoryCommand(sayac, cmd)
-    elif cmd == "f":
-        exeFlagCommand(sayac)
-    elif cmd == "a":
-        print("Registers:")
-        exeRegisterCommand(sayac, "r")
-        print("Memory:")
-        exeMemoryCommand(sayac, "m")
-        print("Flags:")
-        exeFlagCommand(sayac)
-    else:
-        print("Invalid command")
-    getInput(sayac)
+    try:
+        print("sayac>>> ", end="")
+        cmd = input().strip()
+        if cmd == "":
+            return
+        elif cmd.startswith("r"):
+            exeRegisterCommand(sayac, cmd)
+        elif cmd.startswith("m"):
+            exeMemoryCommand(sayac, cmd)
+        elif cmd == "f":
+            exeFlagCommand(sayac)
+        elif cmd == "a":
+            print("Registers:")
+            exeRegisterCommand(sayac, "r")
+            print("Memory:")
+            exeMemoryCommand(sayac, "m")
+            print("Flags:")
+            exeFlagCommand(sayac)
+        else:
+            print("Invalid command")
+        getInput(sayac)
+    except Exception as e:
+        print(f"Invalid command: {e}")
+        getInput(sayac)
 
 
 # Exceptions
