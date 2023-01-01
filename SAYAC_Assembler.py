@@ -114,6 +114,7 @@ class Sayac:
     def createAssemblerOutJsonFile(self, name: str):
         f = open(f"{name}.sayac.json", "w")
         content = {
+            "PC": self.PC,
             "registers": self.registers,
             "memory": self.memory,
             "memoryIO": self.memoryIO,
@@ -523,6 +524,7 @@ def assemble(insFileName, lineByLine: bool):
         while sayac.PC in range(0, len(insLines)):
             lineIndex = sayac.PC
             parseInstruction(insLines[lineIndex], lineIndex + 1, sayac)
+            sayac.createAssemblerOutJsonFile(insFileName)
             if lineByLine:
                 print(insLines[lineIndex])
                 getInput(sayac)
