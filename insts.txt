@@ -5,13 +5,17 @@ MSI __r2 2
 MSI __r5 101
 STR __r5 __r2
 MSI __r2 3
+/*
+    * multi-line comment here
+    */
 MSI __r5 102
-STR __r5 __r2
+STR __r5 __r2 // single-line comment after the code
 MSI __r5 100
-LDR __r2 __r5
+LDR __r2 __r5//single-line comment after the code
 MSI __r5 101
 LDR __r3 __r5
 CMR __r2 __r3
+// single-line comment here
 SHI 4 __r15
 ADD __r2 __r15 __r0
 SHI 1 __r15
@@ -19,10 +23,14 @@ ADD __r3 __r15 __r0
 ADD __r4 __r2 __r3
 AND __r3 __r2 __r3
 SUB __r2 __r4 __r3
+// single-line comment here
 MSI __r5 104
 STR __r5 __r2
 MSI __r5 100
 LDR __r2 __r5
+/*
+multi-line comment here
+*/
 MSI __r5 102
 LDR __r3 __r5
 CMR __r2 __r3
@@ -37,6 +45,10 @@ MSI __r5 105
 STR __r5 __r2
 MSI __r5 104
 LDR __r2 __r5
+/*MSI __r5 105
+  STR __r5 __r2
+  MSI __r5 104
+  LDR __r2 __r5*/
 MSI __r5 105
 LDR __r3 __r5
 AND __r2 __r2 __r3
@@ -50,6 +62,12 @@ MSI __r2 4
 BRR 0x000 __r2
 MSI __r5 100
 LDR __r2 __r5
+/*
+MSI __r5 105
+STR __r5 __r2
+MSI __r5 104
+LDR __r2 __r5
+*/
 MSI __r5 103
 STR __r5 __r2
 MSI __r5 101
